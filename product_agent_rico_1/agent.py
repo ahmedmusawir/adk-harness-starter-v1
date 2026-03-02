@@ -1,0 +1,20 @@
+# /product_agent/agent.py
+from google.adk.agents import Agent
+from google.adk.tools import FunctionTool
+from utils.gcs_utils import fetch_instructions
+from utils.context_utils import fetch_context
+
+# --- Tool and Instruction logic ---
+product_context_tool = FunctionTool(func=fetch_context)
+
+def get_live_instructions(ctx) -> str:
+    return fetch_instructions("product_agent")
+
+# 3. Update the Agent to use the new Vertex
+root_agent = Agent(
+    name="product_agent",
+    model="gemini-2.5-flash", 
+    description="Product Specialist agent",
+    instruction=get_live_instructions,
+    tools=[product_context_tool]
+)
