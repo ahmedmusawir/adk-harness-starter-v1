@@ -12,7 +12,7 @@ def get_live_instructions(ctx) -> str:
 
 # 3. Update the Agent to use the new Vertex
 root_agent = Agent(
-    name="product_agent",
+    name="product_agent_rico_1",
     model="gemini-2.5-flash", 
     description="Product Specialist agent",
     instruction=get_live_instructions,

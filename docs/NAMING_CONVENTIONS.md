@@ -80,13 +80,14 @@ The agent instance variable should match the folder name with `_agent` suffix:
 
 ### Bucket Structure
 
-All paths follow: `{bucket}/agents/{agent_name}/{type}/{filename}`
+All paths follow: `{bucket}/ADK_Agent_Bundle_1/{agent_name}/{type}/{filename}`
 
 | Type | Path Pattern | Example |
 |------|-------------|---------|
-| Context files | `agents/{agent}/context/{file}` | `agents/rico/context/system_prompt.md` |
-| Session files | `agents/{agent}/sessions/{file}` | `agents/rico/sessions/tony_2026-03-03.json` |
-| Run receipts | `agents/{agent}/run_receipts/{file}` | `agents/rico/run_receipts/2026-03-03.jsonl` |
+| Context files | `ADK_Agent_Bundle_1/{agent}/context/{file}` | `ADK_Agent_Bundle_1/rico/context/system_prompt.md` |
+| Instructions | `ADK_Agent_Bundle_1/{agent}/{agent}_instructions.txt` | `ADK_Agent_Bundle_1/jarvis_agent/jarvis_agent_instructions.txt` |
+| Session files | `ADK_Agent_Bundle_1/{agent}/sessions/{file}` | `ADK_Agent_Bundle_1/rico/sessions/tony_2026-03-03.json` |
+| Run receipts | `ADK_Agent_Bundle_1/{agent}/run_receipts/{file}` | `ADK_Agent_Bundle_1/rico/run_receipts/2026-03-03.jsonl` |
 | Skill files | `skills/{skill_name}.md` | `skills/write_session_memory.md` |
 | Playbooks | `playbooks/{file}` | `playbooks/ENGINEER_PLAYBOOK_v1.1.md` |
 

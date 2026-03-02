@@ -21,5 +21,11 @@ gcloud projects add-iam-policy-binding "$PROJECT_ID" \
   --member="serviceAccount:$SERVICE_ACCOUNT_EMAIL" \
   --role="roles/storage.objectViewer"
 
+# Grant permission to access Secret Manager secrets (required for Cloud Run --set-secrets)
+echo "3. Granting Secret Manager Secret Accessor role (roles/secretmanager.secretAccessor)..."
+gcloud projects add-iam-policy-binding "$PROJECT_ID" \
+  --member="serviceAccount:$SERVICE_ACCOUNT_EMAIL" \
+  --role="roles/secretmanager.secretAccessor"
+
 echo "--------------------------------------------------"
 echo "✅ All permissions granted successfully."

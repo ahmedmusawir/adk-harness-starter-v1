@@ -1,5 +1,4 @@
 # 1. Import the necessary base library and ADK components.
-from google import genai
 from google.adk.agents import Agent
 from google.adk.tools import google_search
 from utils.gcs_utils import fetch_instructions

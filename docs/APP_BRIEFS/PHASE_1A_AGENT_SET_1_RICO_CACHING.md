@@ -39,7 +39,7 @@ The deliverable is a **side-by-side comparison table** showing token usage and c
 After STARTER_KIT_SPEC.md is executed, the repo has:
 
 ```
-adk-harness-modules-workshop-v1/
+adk-harness-starter-v1/
 │
 ├── product_agent/                  # Rico A lives HERE — DO NOT MOVE
 │   ├── agent.py                    # Existing agent definition
@@ -380,7 +380,7 @@ When all steps are complete:
 ## File Structure After Completion
 
 ```
-adk-harness-modules-workshop-v1/
+adk-harness-starter-v1/
 │
 ├── product_agent/                  # Rico A (baseline + token tracking)
 │   ├── agent.py                    # Original agent — minimal changes (tracking only)

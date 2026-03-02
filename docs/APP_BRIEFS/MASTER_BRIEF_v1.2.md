@@ -5,7 +5,7 @@
 
 ## Project Identity
 
-- **Repo:** `adk-harness-modules-workshop-v1`
+- **Repo:** `adk-harness-starter-v1`
 - **Owner:** Tony Stark — Cyberize Engineering
 - **Engineering Agent:** Claude Code (with CLAUDE.md constitution)
 - **Architect/Planner:** Gemini (JARVIS)
@@ -76,8 +76,8 @@ Every agent inherits these from the starter kit:
 
 | Utility | File | Purpose |
 |---------|------|---------|
-| Token Calculator | `shared/token_calculator.py` | Count tokens for any content against any Gemini model |
-| Run Receipt | `shared/run_receipt.py` | Log every agent run: tokens, cost, latency, model, timestamp |
+| Token Calculator | `utils/token_calculator.py` | Count tokens for any content against any Gemini model |
+| Run Receipt | `utils/run_receipt.py` | Log every agent run: tokens, cost, latency, model, timestamp |
 | Test Harness | `pytest.ini` + test fixtures | pytest config, regression rule, eval case structure |
 
 **These are NOT optional.** They ship with the starter kit. Every cloned agent has them from birth.

@@ -210,3 +210,6 @@ __marimo__/
 # google cloud json file
 cyberize-vertex-api.json
 adk_sessions.db
+
+# agent-specific env files
+ghl_mcp_agent/.env

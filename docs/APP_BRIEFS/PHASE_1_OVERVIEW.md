@@ -1,4 +1,4 @@
-# PHASE_1_OVERVIEW.md — ADK Harness Modules Workshop v1
+# PHASE_1_OVERVIEW.md — ADK Harness Starter v1
 ## Shared Patterns, Conventions & Starter Kit
 
 ---
@@ -27,7 +27,7 @@ The repo starts with a working ADK bundle containing 4 functional agents. These 
 ### Current Repo Structure (Expected)
 
 ```
-adk-harness-modules-workshop-v1/
+adk-harness-starter-v1/
 ├── agents/
 │   ├── product_agent_rico/
 │   │   ├── __init__.py          # from .agent import root_agent
@@ -45,9 +45,9 @@ adk-harness-modules-workshop-v1/
 │       ├── __init__.py
 │       ├── agent.py             # Agent + calculator FunctionTool
 │       └── tools.py
-├── shared/                      # NEW — shared modules go here
+├── utils/                       # Shared modules go here
 │   ├── __init__.py
-│   ├── token_tracker.py         # Token calculator (built with Agent 1A)
+│   ├── token_calculator.py      # Token calculator (built with Agent 1A)
 │   ├── run_receipt.py           # Run receipt logger (built with Agent 1A)
 │   ├── session_writer.py        # Session file writer (built with Agent 3)
 │   └── gcs_utils.py             # Common GCS read/write helpers
@@ -78,9 +78,9 @@ This discovery doc becomes the reference for all future agents. If the starter k
 
 ## Shared Modules — The Reusable Engine
 
-These modules are built once and imported by every agent. They live in `shared/`.
+These modules are built once and imported by every agent. They live in `utils/`.
 
-### 1. Token Tracker (shared/token_tracker.py)
+### 1. Token Calculator (utils/token_calculator.py)
 
 **Built with:** Agent 1A (Rico Baseline)
 **Full spec:** See MASTER_BRIEF v1.1 — Token Calculator Micro-Spec
@@ -91,7 +91,7 @@ Wraps model calls to capture:
 
 ```python
 # Usage in any agent
-from shared.token_tracker import tracked_generate
+from utils.token_calculator import tracked_generate
 
 result = tracked_generate(model, contents, config)
 response = result["response"]
@@ -100,7 +100,7 @@ metrics = result["metrics"]  # dict with all 6 fields
 
 **Implementation note:** This is a wrapper function, not an ADK callback. It wraps the model call directly because usage_metadata lives on the response object, not in ADK event stream.
 
-### 2. Run Receipt Logger (shared/run_receipt.py)
+### 2. Run Receipt Logger (utils/run_receipt.py)
 
 **Built with:** Agent 1A (Rico Baseline)
 **Full spec:** See MASTER_BRIEF v1.1 — Run Receipt Standard
@@ -109,7 +109,7 @@ Writes a JSON receipt to GCS after every agent interaction.
 
 ```python
 # Usage in any agent
-from shared.run_receipt import log_receipt
+from utils.run_receipt import log_receipt
 
 log_receipt(
     agent_name="rico_baseline",
@@ -124,7 +124,7 @@ log_receipt(
 
 **Storage:** `gs://{bucket}/agents/{agent_name}/receipts/{run_id}.json`
 
-### 3. Session File Writer (shared/session_writer.py)
+### 3. Session File Writer (utils/session_writer.py)
 
 **Built with:** Agent 3 (Skills Agent)
 **Full spec:** See PHASE_1A_AGENT_3_SKILLS.md
@@ -133,7 +133,7 @@ Writes and reads dated session context files in GCS.
 
 ```python
 # Usage in any agent
-from shared.session_writer import write_session, read_session
+from utils.session_writer import write_session, read_session
 
 # Write today's session context
 write_session(
@@ -148,12 +148,12 @@ context = read_session(agent_name="rico_baseline", days=7)
 **Storage:** `gs://{bucket}/agents/{agent_name}/sessions/session-{YYYY-MM-DD}.md`
 **Retention:** 7-day rolling window. Files older than 7 days are ignored (not deleted — deletion is a Phase 2 consideration).
 
-### 4. GCS Utilities (shared/gcs_utils.py)
+### 4. GCS Utilities (utils/gcs_utils.py)
 
 Common GCS operations used by multiple modules.
 
 ```python
-from shared.gcs_utils import read_gcs_file, write_gcs_file, list_gcs_files
+from utils.gcs_utils import read_gcs_file, write_gcs_file, list_gcs_files
 
 content = read_gcs_file("agents/rico/instructions/system_prompt.md")
 write_gcs_file("agents/rico/sessions/session-2026-02-27.md", content)
@@ -303,7 +303,7 @@ gs://{bucket}/
 │       ├── instructions/
 │       ├── sessions/
 │       └── receipts/
-└── shared/
+└── utils/
     └── config/
         └── model_pricing.json
 ```
@@ -367,10 +367,10 @@ Step 0: Starter Kit Discovery
   Read existing agents, document in STARTER_KIT_DISCOVERY.md
   Fix inconsistencies if found
 
-Step 1: Agent 1A — Rico Baseline + Token Tracker + Run Receipt
-  Add token_tracker.py to shared/
-  Add run_receipt.py to shared/
-  Add gcs_utils.py to shared/
+Step 1: Agent 1A — Rico Baseline + Token Calculator + Run Receipt
+  Add token_calculator.py to utils/
+  Add run_receipt.py to utils/
+  Add gcs_utils.py to utils/
   Wrap Rico model calls with token tracking
   Log run receipts after each interaction
   Write tests
@@ -384,7 +384,7 @@ Step 2: Agent 1B — Rico Cached
   Compare metrics against Rico A baseline
 
 Step 3: Agent 3 — Skills Agent + Session Writer
-  Add session_writer.py to shared/
+  Add session_writer.py to utils/
   Build agent with 3 skills: session memory write, summarize, mode switch
   Write skill files to GCS
   Write tests for skill execution
@@ -443,7 +443,7 @@ Step 7: Integration Verification
 ```bash
 # Clone repo
 git clone <repo-url>
-cd adk-harness-modules-workshop-v1
+cd adk-harness-starter-v1
 
 # Create virtual environment
 python -m venv .venv
@@ -492,7 +492,7 @@ pytest
 | Test files | test_*.py | test_tools.py, test_agent.py |
 | Eval cases | eval_cases.json | agents/rico_baseline/tests/eval_cases.json |
 | Branch name | feat/agent-{n}-{name} | feat/agent-1a-rico-baseline |
-| Shared modules | shared/{module}.py | shared/token_tracker.py |
+| Utility modules | utils/{module}.py | utils/token_calculator.py |
 
 ---
 

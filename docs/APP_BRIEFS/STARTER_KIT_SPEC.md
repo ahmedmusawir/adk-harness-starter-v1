@@ -313,7 +313,7 @@ def read_session_memory(
 ## TARGET FILE STRUCTURE (after cleanup)
 
 ```
-adk-harness-modules-workshop-v1/
+adk-harness-starter-v1/
 │
 ├── product_agent/                  # Rico — base agent (Phase 1A test subject)
 │   ├── agent.py

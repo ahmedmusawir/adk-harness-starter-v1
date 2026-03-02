@@ -1,4 +1,4 @@
-# PHASE_1_TESTING_STRATEGY.md — ADK Harness Modules Workshop v1
+# PHASE_1_TESTING_STRATEGY.md — ADK Harness Starter v1
 ## Testing Framework, Conventions & Eval Patterns
 
 ---
@@ -63,7 +63,7 @@ pytest agents/ -v
 pytest agents/rico_baseline/tests/ -v
 
 # Run with coverage
-pytest agents/ --cov=agents --cov=shared --cov-report=term-missing
+pytest agents/ --cov=agents --cov=utils --cov-report=term-missing
 
 # Run only unit tests (fast)
 pytest agents/ -v -m unit
@@ -150,18 +150,18 @@ markers =
 
 ### Shared Module Tests
 
-These live in `shared/tests/` and run with every agent build.
+These live in `utils/tests/` and run with every agent build.
 
 ```
-shared/
+utils/
 ├── __init__.py
-├── token_tracker.py
+├── token_calculator.py
 ├── run_receipt.py
 ├── session_writer.py
 ├── gcs_utils.py
 └── tests/
     ├── __init__.py
-    ├── test_token_tracker.py
+    ├── test_token_calculator.py
     ├── test_run_receipt.py
     ├── test_session_writer.py
     └── test_gcs_utils.py
@@ -169,8 +169,8 @@ shared/
 
 | Module | Test | What It Asserts |
 |--------|------|----------------|
-| token_tracker | `test_returns_all_six_fields` | Dict has input_tokens, output_tokens, cached_tokens, total_tokens, latency_ms, cost_estimate_usd |
-| token_tracker | `test_handles_missing_usage_metadata` | Returns zeroes (not crash) if model response lacks usage_metadata |
+| token_calculator | `test_returns_all_six_fields` | Dict has input_tokens, output_tokens, cached_tokens, total_tokens, latency_ms, cost_estimate_usd |
+| token_calculator | `test_handles_missing_usage_metadata` | Returns zeroes (not crash) if model response lacks usage_metadata |
 | run_receipt | `test_receipt_schema_valid` | JSON matches the 10-field schema from MASTER_BRIEF |
 | run_receipt | `test_receipt_writes_to_gcs` | File appears at expected GCS path |
 | run_receipt | `test_receipt_run_id_unique` | Two consecutive receipts have different run_ids |
@@ -371,7 +371,7 @@ Same eval cases as 1A (identical queries). The point is to compare:
 pytest agents/rico_baseline/tests/ agents/rico_cached/tests/ -v
 
 # Before merging any PR:
-pytest agents/ shared/ -v
+pytest agents/ utils/ -v
 ```
 
 ### Run Receipt Regression
@@ -429,7 +429,7 @@ Compare run receipts between Rico A and Rico B.
 Reads receipts from GCS, computes averages, prints comparison table.
 """
 import json
-from shared.gcs_utils import list_files, read_file
+from utils.gcs_utils import list_files, read_file
 
 
 def load_receipts(agent_name: str) -> list[dict]:
@@ -477,7 +477,7 @@ test_{what}_{expected_outcome}
 Examples:
   test_gcs_reader_returns_data
   test_gcs_reader_missing_file_returns_error
-  test_token_tracker_captures_all_fields
+  test_token_calculator_captures_all_fields
   test_cached_tokens_greater_than_zero
   test_skill_does_not_persist_beyond_scope
 ```
@@ -490,7 +490,7 @@ Phase 1 does NOT require a full CI pipeline. But establish the habit:
 
 ```bash
 # Pre-commit check (run manually before every PR)
-pytest agents/ shared/ -v -m 'not slow'
+pytest agents/ utils/ -v -m 'not slow'
 ```
 
 Phase 2 will add GitHub Actions with:
@@ -532,7 +532,7 @@ Phase 1 targets (realistic, not aspirational):
 
 | Component | Target |
 |-----------|--------|
-| Shared modules (token_tracker, run_receipt, session_writer, gcs_utils) | 90%+ |
+| Shared modules (token_calculator, run_receipt, session_writer, gcs_utils) | 90%+ |
 | Agent tools (tools.py per agent) | 80%+ |
 | Agent integration (agent.py) | 60%+ (LLM responses are non-deterministic) |
 
@@ -549,7 +549,7 @@ Before marking any agent as DONE:
 - [ ] `tests/test_shared_modules.py` — Token tracker + run receipt work for this agent
 - [ ] `tests/eval_cases.json` — At least 5 eval cases defined
 - [ ] `pytest agents/{agent_name}/tests/ -v` — All pass
-- [ ] `pytest agents/ shared/ -v` — Full regression suite passes
+- [ ] `pytest agents/ utils/ -v` — Full regression suite passes
 - [ ] Run receipt generated and saved to GCS
 
 ---
