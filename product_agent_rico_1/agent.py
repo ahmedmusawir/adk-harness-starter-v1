@@ -14,6 +14,7 @@ def get_live_instructions(ctx) -> str:
 root_agent = Agent(
     name="product_agent_rico_1",
     model="gemini-2.5-flash", 
+    # model="gemini-3-flash-preview", 
     description="Product Specialist agent",
     instruction=get_live_instructions,
     tools=[product_context_tool]

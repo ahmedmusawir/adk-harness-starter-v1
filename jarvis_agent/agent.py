@@ -13,6 +13,7 @@ def get_live_instructions(ctx) -> str:
 root_agent = Agent(
     name="jarvis_agent",
     model="gemini-2.5-flash", 
+    # model="gemini-3-flash-preview", 
     description="Jarvis agent",
     instruction=get_live_instructions,
     tools=[google_search],

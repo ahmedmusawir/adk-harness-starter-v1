@@ -39,6 +39,7 @@ def get_rico_instructions(ctx) -> str:
 root_agent = Agent(
     name="ghl_mcp_agent",
     model="gemini-2.5-flash",
+    # model="gemini-3-flash-preview",
     description="Rico - Your friendly GHL-connected assistant powered by Vertex",
     instruction=get_rico_instructions,
     tools=[

@@ -2,6 +2,13 @@
 
 ---
 
+## 2026-03-03 — [CC] Claude Code
+
+- **Created:** `skills/SCAFFOLD_NEW_AGENT.md` — Skill file defining how to scaffold a new ADK agent. Covers folder structure, `__init__.py`, `agent.py` boilerplate (4 patterns), GCS instruction file path, and a validation checklist. Grounded in actual repo patterns from the 3 existing agents.
+- **Created:** `skills/` directory at repo root.
+
+---
+
 ## 2026-03-02 — [CC] Claude Code — Pre-Phase-1A Cleanup
 
 ### Infrastructure Fixes
