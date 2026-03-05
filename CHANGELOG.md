@@ -2,7 +2,65 @@
 
 ---
 
-## 2026-03-03 — [CC] Claude Code
+## 2026-03-04 — [CC] Claude Code — Receipt callbacks wired to all agents
+
+- **Updated:** `jarvis_agent/agent.py` — added `before_model_callback` + `after_model_callback`. No other changes.
+- **Updated:** `ghl_mcp_agent/agent.py` — added `before_model_callback` + `after_model_callback`. No other changes.
+- Receipts for all three agents now log to `logs/receipts/{agent_name}.jsonl`.
+
+---
+
+## 2026-03-04 — [CC] Claude Code — SK-INT Integration Wiring & Usage Reporting
+
+- **Created:** `callbacks/__init__.py` — package marker.
+- **Created:** `callbacks/receipt_callback.py` — ADK callback factory. `get_start_time_callback()` → before_model_callback that stamps `_run_start_time` in session state. `get_receipt_callback(agent_name, model)` → after_model_callback that skips streaming chunks, reads latency from state, calls `create_receipt()` → `format_receipt()` → `save_receipt_to_file()`. Errors are caught and printed as warnings so the agent continues normally.
+- **Updated:** `product_agent_rico_1/agent.py` — wired `before_model_callback` + `after_model_callback`. No other changes to agent logic, tools, or system prompt.
+- **Created:** `scripts/usage_report.py` — CLI usage report. Reads `logs/receipts/*.jsonl`, filters by `--date` (defaults to today UTC), aggregates per agent, prints aligned ASCII table. Handles missing dir gracefully.
+- **Created:** `tests/test_receipt_callback.py` — 6 unit tests (all mocked, no API calls). All green.
+- **Updated:** `.gitignore` — added `logs/` to prevent runtime receipts from being committed.
+
+---
+
+## 2026-03-03 — [CC] Claude Code — SK-4 Context Cache
+
+- **Created:** `utils/context_cache.py` — Vertex AI context caching utility. Public API: `create_cache()`, `get_cache()`, `delete_cache()`, `list_caches()`, `estimate_cache_savings()`. Cached token rate = 10% of input price (90% discount). `create_cache()` accepts optional `tools` parameter — tools must be baked into the cache, not passed at generation time (see Architectural Decision below).
+- **Created:** `tests/test_context_cache.py` — 13 tests (10 integration, 3 unit). All green.
+
+---
+
+## 2026-03-03 — [CC] Claude Code — Architectural Decision: Vertex Caching + Tools
+
+### Vertex AI Context Caching — Tools Constraint
+
+**Finding (live-tested 2026-03-03):** When using `cached_content` in a `generate_content` call, the Vertex AI API **rejects** any request that also sets `tools`, `tool_config`, or `system_instruction` in the `GenerateContentConfig`. Error: `400 INVALID_ARGUMENT: "Tool config, tools and system instruction should not be set in the request when using cached content."`
+
+**Workaround (confirmed working):** Tools CAN be baked into the cache itself via `CreateCachedContentConfig(tools=[...])`. When the agent calls `generate_content`, it passes only `cached_content=cache.name` — no separate `tools` argument. The cached tools are used automatically.
+
+**Impact on Phase 1A — Rico B:**
+- Rico B's `create_cache()` call must include any ADK tools in `CreateCachedContentConfig.tools`
+- The ADK `Agent()` `tools=` parameter is **incompatible** with `cached_content` unless those tools are pre-baked into the cache
+- `utils/context_cache.py` `create_cache()` accepts an optional `tools` parameter for this pattern
+
+---
+
+## 2026-03-03 — [CC] Claude Code — SK-2 Run Receipt
+
+- **Created:** `utils/run_receipt.py` — Run receipt utility. Public API: `create_receipt()`, `format_receipt()`, `save_receipt_to_file()`. `create_receipt()` calls `count_tokens()` + `estimate_cost()` from SK-1 internally; caller passes raw text only.
+- **Created:** `tests/test_run_receipt.py` — 13 tests (8 integration, 5 unit). All green.
+- **Created:** `tests/conftest.py` — shared fixtures: `sample_input_text`, `sample_output_text`, `sample_receipt`.
+
+---
+
+## 2026-03-03 — [CC] Claude Code — SK-1 Token Calculator
+
+- **Created:** `utils/token_calculator.py` — Token counting utility using Vertex AI `client.models.count_tokens()`. Public API: `count_tokens()`, `estimate_cost()`, `get_model_pricing()`. Hardcoded pricing for gemini-2.5-flash, gemini-2.5-pro, gemini-2.0-flash.
+- **Created:** `tests/test_token_calculator.py` — 10 tests (7 unit, 3 integration). All green.
+- **Created:** `tests/__init__.py` — makes tests a package.
+- **Created:** `pytest.ini` — minimal marker registration for `unit` and `integration`.
+
+---
+
+## 2026-03-03 — [CC] Claude Code — SCAFFOLD_NEW_AGENT Skill
 
 - **Created:** `skills/SCAFFOLD_NEW_AGENT.md` — Skill file defining how to scaffold a new ADK agent. Covers folder structure, `__init__.py`, `agent.py` boilerplate (4 patterns), GCS instruction file path, and a validation checklist. Grounded in actual repo patterns from the 3 existing agents.
 - **Created:** `skills/` directory at repo root.

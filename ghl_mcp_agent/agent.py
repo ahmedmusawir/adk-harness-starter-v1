@@ -5,6 +5,7 @@ import os
 from google import genai
 from google.adk.agents import Agent
 from google.adk.tools.mcp_tool.mcp_toolset import MCPToolset, StreamableHTTPConnectionParams
+from callbacks.receipt_callback import get_receipt_callback, get_start_time_callback
 
 # GHL Private Integration credentials
 GHL_API_TOKEN = os.getenv("GHL_API_TOKEN", "your_token_here")
@@ -55,5 +56,10 @@ root_agent = Agent(
             # tool_filter=['contacts_get-contact', 'contacts_create-contact', 'conversations_send-a-new-message']
         )
     ],
+    before_model_callback=get_start_time_callback(),
+    after_model_callback=get_receipt_callback(
+        agent_name="ghl_mcp_agent",
+        model="gemini-2.5-flash",
+    ),
 )
 

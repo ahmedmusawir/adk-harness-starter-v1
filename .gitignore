@@ -213,3 +213,6 @@ adk_sessions.db
 
 # agent-specific env files
 ghl_mcp_agent/.env
+
+# runtime logs (receipts, etc.)
+logs/
